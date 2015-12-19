@@ -1,0 +1,942 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="straklearndbModel.Store" Provider="MySql.Data.MySqlClient" ProviderManifestToken="5.5" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="czlonkowie">
+          <Key>
+            <PropertyRef Name="id_czlonkostwa" />
+          </Key>
+          <Property Name="id_czlonkostwa" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="id_grupy" Type="int" Nullable="false" />
+          <Property Name="id_uzytkownika" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="grupy">
+          <Key>
+            <PropertyRef Name="id_grupy" />
+          </Key>
+          <Property Name="id_grupy" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="id_administratora" Type="int" Nullable="false" />
+          <Property Name="nazwa" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="prywatnosc" Type="tinyint" Nullable="false" />
+          <Property Name="data_zalozenia" Type="datetime" Precision="0" />
+        </EntityType>
+        <EntityType Name="kategorie">
+          <Key>
+            <PropertyRef Name="id_kategorii" />
+          </Key>
+          <Property Name="id_kategorii" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="id_grupy" Type="int" Nullable="false" />
+          <Property Name="nazwa" Type="varchar" MaxLength="100" />
+          <Property Name="opis" Type="varchar" MaxLength="100" />
+        </EntityType>
+        <EntityType Name="pytania">
+          <Key>
+            <PropertyRef Name="id_pytania" />
+          </Key>
+          <Property Name="id_pytania" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="id_kategorii" Type="int" Nullable="false" />
+          <Property Name="id_uzytkownika" Type="int" Nullable="false" />
+          <Property Name="tresc" Type="varchar" MaxLength="500" Nullable="false" />
+          <Property Name="odpowiedz1" Type="varchar" MaxLength="200" Nullable="false" />
+          <Property Name="odpowiedz2" Type="varchar" MaxLength="200" Nullable="false" />
+          <Property Name="odpowiedz3" Type="varchar" MaxLength="200" Nullable="false" />
+          <Property Name="odpowiedz4" Type="varchar" MaxLength="200" Nullable="false" />
+          <Property Name="indeks_poprawnej" Type="tinyint" Nullable="false" />
+        </EntityType>
+        <EntityType Name="quiz">
+          <Key>
+            <PropertyRef Name="id_quizu" />
+          </Key>
+          <Property Name="id_quizu" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="id_kategorii" Type="int" Nullable="false" />
+          <Property Name="id_grupy" Type="int" Nullable="false" />
+          <Property Name="id_uzytkownika" Type="int" Nullable="false" />
+          <Property Name="ilosc_pytan" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="quiz_pytania">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="id_quizu" Type="int" Nullable="false" />
+          <Property Name="id_pytania" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="statystyki_glowne">
+          <Key>
+            <PropertyRef Name="id_statystyki" />
+          </Key>
+          <Property Name="id_statystyki" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="id_quizu" Type="int" Nullable="false" />
+          <Property Name="poprawne" Type="int" Nullable="false" />
+          <Property Name="niepoprawne" Type="int" Nullable="false" />
+          <Property Name="czas_rozpoczecia" Type="datetime" Precision="0" />
+          <Property Name="czas_zakonczenia" Type="datetime" Precision="0" />
+        </EntityType>
+        <EntityType Name="statystyki_szczegolowe">
+          <Key>
+            <PropertyRef Name="id_statystyki_szczeg" />
+          </Key>
+          <Property Name="id_statystyki_szczeg" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="id_quizu" Type="int" Nullable="false" />
+          <Property Name="id_pytania" Type="int" Nullable="false" />
+          <Property Name="odpowiedz" Type="int" />
+        </EntityType>
+        <EntityType Name="uzytkownicy_info">
+          <Key>
+            <PropertyRef Name="id_info" />
+          </Key>
+          <Property Name="id_info" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="id_login" Type="int" Nullable="false" />
+          <Property Name="imie" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="nazwisko" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="plec" Type="varchar" MaxLength="1" />
+          <Property Name="adres_email" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="data_urodzenia" Type="datetime" Precision="0" />
+          <Property Name="data_rejestracji" Type="datetime" Precision="0" />
+        </EntityType>
+        <EntityType Name="uzytkownicy_login">
+          <Key>
+            <PropertyRef Name="id_login" />
+          </Key>
+          <Property Name="id_login" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="login" Type="varchar" MaxLength="50" />
+          <Property Name="haslo" Type="varchar" MaxLength="50" />
+        </EntityType>
+        <Association Name="id_administratora">
+          <End Role="uzytkownicy_login" Type="Self.uzytkownicy_login" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="grupy" Type="Self.grupy" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="uzytkownicy_login">
+              <PropertyRef Name="id_login" />
+            </Principal>
+            <Dependent Role="grupy">
+              <PropertyRef Name="id_administratora" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="id_grupy">
+          <End Role="grupy" Type="Self.grupy" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="czlonkowie" Type="Self.czlonkowie" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="grupy">
+              <PropertyRef Name="id_grupy" />
+            </Principal>
+            <Dependent Role="czlonkowie">
+              <PropertyRef Name="id_grupy" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="id_kategorii">
+          <End Role="kategorie" Type="Self.kategorie" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="pytania" Type="Self.pytania" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="kategorie">
+              <PropertyRef Name="id_kategorii" />
+            </Principal>
+            <Dependent Role="pytania">
+              <PropertyRef Name="id_kategorii" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="id_pytania">
+          <End Role="pytania" Type="Self.pytania" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="quiz_pytania" Type="Self.quiz_pytania" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="pytania">
+              <PropertyRef Name="id_pytania" />
+            </Principal>
+            <Dependent Role="quiz_pytania">
+              <PropertyRef Name="id_pytania" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="id_quizu">
+          <End Role="quiz" Type="Self.quiz" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="quiz_pytania" Type="Self.quiz_pytania" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="quiz">
+              <PropertyRef Name="id_quizu" />
+            </Principal>
+            <Dependent Role="quiz_pytania">
+              <PropertyRef Name="id_quizu" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="id_uzytkownika">
+          <End Role="uzytkownicy_login" Type="Self.uzytkownicy_login" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="czlonkowie" Type="Self.czlonkowie" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="uzytkownicy_login">
+              <PropertyRef Name="id_login" />
+            </Principal>
+            <Dependent Role="czlonkowie">
+              <PropertyRef Name="id_uzytkownika" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="id_uzytkownika_pyt">
+          <End Role="uzytkownicy_login" Type="Self.uzytkownicy_login" Multiplicity="1" />
+          <End Role="pytania" Type="Self.pytania" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="uzytkownicy_login">
+              <PropertyRef Name="id_login" />
+            </Principal>
+            <Dependent Role="pytania">
+              <PropertyRef Name="id_uzytkownika" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="kategorie_ibfk_1">
+          <End Role="grupy" Type="Self.grupy" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="kategorie" Type="Self.kategorie" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="grupy">
+              <PropertyRef Name="id_grupy" />
+            </Principal>
+            <Dependent Role="kategorie">
+              <PropertyRef Name="id_grupy" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="quiz_ibfk_1">
+          <End Role="kategorie" Type="Self.kategorie" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="quiz" Type="Self.quiz" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="kategorie">
+              <PropertyRef Name="id_kategorii" />
+            </Principal>
+            <Dependent Role="quiz">
+              <PropertyRef Name="id_kategorii" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="quiz_ibfk_2">
+          <End Role="grupy" Type="Self.grupy" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="quiz" Type="Self.quiz" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="grupy">
+              <PropertyRef Name="id_grupy" />
+            </Principal>
+            <Dependent Role="quiz">
+              <PropertyRef Name="id_grupy" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="quiz_ibfk_3">
+          <End Role="uzytkownicy_login" Type="Self.uzytkownicy_login" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="quiz" Type="Self.quiz" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="uzytkownicy_login">
+              <PropertyRef Name="id_login" />
+            </Principal>
+            <Dependent Role="quiz">
+              <PropertyRef Name="id_uzytkownika" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="statystyki_glowne_ibfk_1">
+          <End Role="quiz" Type="Self.quiz" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="statystyki_glowne" Type="Self.statystyki_glowne" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="quiz">
+              <PropertyRef Name="id_quizu" />
+            </Principal>
+            <Dependent Role="statystyki_glowne">
+              <PropertyRef Name="id_quizu" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="statystyki_szczegolowe_ibfk_1">
+          <End Role="quiz" Type="Self.quiz" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="statystyki_szczegolowe" Type="Self.statystyki_szczegolowe" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="quiz">
+              <PropertyRef Name="id_quizu" />
+            </Principal>
+            <Dependent Role="statystyki_szczegolowe">
+              <PropertyRef Name="id_quizu" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="statystyki_szczegolowe_ibfk_2">
+          <End Role="pytania" Type="Self.pytania" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="statystyki_szczegolowe" Type="Self.statystyki_szczegolowe" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="pytania">
+              <PropertyRef Name="id_pytania" />
+            </Principal>
+            <Dependent Role="statystyki_szczegolowe">
+              <PropertyRef Name="id_pytania" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="uzytkownicy_info_ibfk_1">
+          <End Role="uzytkownicy_login" Type="Self.uzytkownicy_login" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="uzytkownicy_info" Type="Self.uzytkownicy_info" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="uzytkownicy_login">
+              <PropertyRef Name="id_login" />
+            </Principal>
+            <Dependent Role="uzytkownicy_info">
+              <PropertyRef Name="id_login" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="straklearndbModelStoreContainer">
+          <EntitySet Name="czlonkowie" EntityType="Self.czlonkowie" Schema="straklearndb" store:Type="Tables" />
+          <EntitySet Name="grupy" EntityType="Self.grupy" Schema="straklearndb" store:Type="Tables" />
+          <EntitySet Name="kategorie" EntityType="Self.kategorie" Schema="straklearndb" store:Type="Tables" />
+          <EntitySet Name="pytania" EntityType="Self.pytania" Schema="straklearndb" store:Type="Tables" />
+          <EntitySet Name="quiz" EntityType="Self.quiz" Schema="straklearndb" store:Type="Tables" />
+          <EntitySet Name="quiz_pytania" EntityType="Self.quiz_pytania" Schema="straklearndb" store:Type="Tables" />
+          <EntitySet Name="statystyki_glowne" EntityType="Self.statystyki_glowne" Schema="straklearndb" store:Type="Tables" />
+          <EntitySet Name="statystyki_szczegolowe" EntityType="Self.statystyki_szczegolowe" Schema="straklearndb" store:Type="Tables" />
+          <EntitySet Name="uzytkownicy_info" EntityType="Self.uzytkownicy_info" Schema="straklearndb" store:Type="Tables" />
+          <EntitySet Name="uzytkownicy_login" EntityType="Self.uzytkownicy_login" Schema="straklearndb" store:Type="Tables" />
+          <AssociationSet Name="id_administratora" Association="Self.id_administratora">
+            <End Role="uzytkownicy_login" EntitySet="uzytkownicy_login" />
+            <End Role="grupy" EntitySet="grupy" />
+          </AssociationSet>
+          <AssociationSet Name="id_grupy" Association="Self.id_grupy">
+            <End Role="grupy" EntitySet="grupy" />
+            <End Role="czlonkowie" EntitySet="czlonkowie" />
+          </AssociationSet>
+          <AssociationSet Name="id_kategorii" Association="Self.id_kategorii">
+            <End Role="kategorie" EntitySet="kategorie" />
+            <End Role="pytania" EntitySet="pytania" />
+          </AssociationSet>
+          <AssociationSet Name="id_pytania" Association="Self.id_pytania">
+            <End Role="pytania" EntitySet="pytania" />
+            <End Role="quiz_pytania" EntitySet="quiz_pytania" />
+          </AssociationSet>
+          <AssociationSet Name="id_quizu" Association="Self.id_quizu">
+            <End Role="quiz" EntitySet="quiz" />
+            <End Role="quiz_pytania" EntitySet="quiz_pytania" />
+          </AssociationSet>
+          <AssociationSet Name="id_uzytkownika" Association="Self.id_uzytkownika">
+            <End Role="uzytkownicy_login" EntitySet="uzytkownicy_login" />
+            <End Role="czlonkowie" EntitySet="czlonkowie" />
+          </AssociationSet>
+          <AssociationSet Name="id_uzytkownika_pyt" Association="Self.id_uzytkownika_pyt">
+            <End Role="uzytkownicy_login" EntitySet="uzytkownicy_login" />
+            <End Role="pytania" EntitySet="pytania" />
+          </AssociationSet>
+          <AssociationSet Name="kategorie_ibfk_1" Association="Self.kategorie_ibfk_1">
+            <End Role="grupy" EntitySet="grupy" />
+            <End Role="kategorie" EntitySet="kategorie" />
+          </AssociationSet>
+          <AssociationSet Name="quiz_ibfk_1" Association="Self.quiz_ibfk_1">
+            <End Role="kategorie" EntitySet="kategorie" />
+            <End Role="quiz" EntitySet="quiz" />
+          </AssociationSet>
+          <AssociationSet Name="quiz_ibfk_2" Association="Self.quiz_ibfk_2">
+            <End Role="grupy" EntitySet="grupy" />
+            <End Role="quiz" EntitySet="quiz" />
+          </AssociationSet>
+          <AssociationSet Name="quiz_ibfk_3" Association="Self.quiz_ibfk_3">
+            <End Role="uzytkownicy_login" EntitySet="uzytkownicy_login" />
+            <End Role="quiz" EntitySet="quiz" />
+          </AssociationSet>
+          <AssociationSet Name="statystyki_glowne_ibfk_1" Association="Self.statystyki_glowne_ibfk_1">
+            <End Role="quiz" EntitySet="quiz" />
+            <End Role="statystyki_glowne" EntitySet="statystyki_glowne" />
+          </AssociationSet>
+          <AssociationSet Name="statystyki_szczegolowe_ibfk_1" Association="Self.statystyki_szczegolowe_ibfk_1">
+            <End Role="quiz" EntitySet="quiz" />
+            <End Role="statystyki_szczegolowe" EntitySet="statystyki_szczegolowe" />
+          </AssociationSet>
+          <AssociationSet Name="statystyki_szczegolowe_ibfk_2" Association="Self.statystyki_szczegolowe_ibfk_2">
+            <End Role="pytania" EntitySet="pytania" />
+            <End Role="statystyki_szczegolowe" EntitySet="statystyki_szczegolowe" />
+          </AssociationSet>
+          <AssociationSet Name="uzytkownicy_info_ibfk_1" Association="Self.uzytkownicy_info_ibfk_1">
+            <End Role="uzytkownicy_login" EntitySet="uzytkownicy_login" />
+            <End Role="uzytkownicy_info" EntitySet="uzytkownicy_info" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="straklearndbModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="czlonkowie">
+          <Key>
+            <PropertyRef Name="id_czlonkostwa" />
+          </Key>
+          <Property Name="id_czlonkostwa" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="id_grupy" Type="Int32" Nullable="false" />
+          <Property Name="id_uzytkownika" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="grupy" Relationship="Self.id_grupy" FromRole="czlonkowie" ToRole="grupy" />
+          <NavigationProperty Name="uzytkownicy_login" Relationship="Self.id_uzytkownika" FromRole="czlonkowie" ToRole="uzytkownicy_login" />
+        </EntityType>
+        <EntityType Name="grupy">
+          <Key>
+            <PropertyRef Name="id_grupy" />
+          </Key>
+          <Property Name="id_grupy" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="id_administratora" Type="Int32" Nullable="false" />
+          <Property Name="nazwa" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="prywatnosc" Type="SByte" Nullable="false" />
+          <Property Name="data_zalozenia" Type="DateTime" />
+          <NavigationProperty Name="czlonkowies" Relationship="Self.id_grupy" FromRole="grupy" ToRole="czlonkowie" />
+          <NavigationProperty Name="uzytkownicy_login" Relationship="Self.id_administratora" FromRole="grupy" ToRole="uzytkownicy_login" />
+          <NavigationProperty Name="kategories" Relationship="Self.kategorie_ibfk_1" FromRole="grupy" ToRole="kategorie" />
+          <NavigationProperty Name="quizs" Relationship="Self.quiz_ibfk_2" FromRole="grupy" ToRole="quiz" />
+        </EntityType>
+        <EntityType Name="kategorie">
+          <Key>
+            <PropertyRef Name="id_kategorii" />
+          </Key>
+          <Property Name="id_kategorii" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="id_grupy" Type="Int32" Nullable="false" />
+          <Property Name="nazwa" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="opis" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="grupy" Relationship="Self.kategorie_ibfk_1" FromRole="kategorie" ToRole="grupy" />
+          <NavigationProperty Name="pytanias" Relationship="Self.id_kategorii" FromRole="kategorie" ToRole="pytania" />
+          <NavigationProperty Name="quizs" Relationship="Self.quiz_ibfk_1" FromRole="kategorie" ToRole="quiz" />
+        </EntityType>
+        <EntityType Name="pytania">
+          <Key>
+            <PropertyRef Name="id_pytania" />
+          </Key>
+          <Property Name="id_pytania" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="id_kategorii" Type="Int32" Nullable="false" />
+          <Property Name="id_uzytkownika" Type="Int32" Nullable="false" />
+          <Property Name="tresc" Type="String" MaxLength="500" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="odpowiedz1" Type="String" MaxLength="200" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="odpowiedz2" Type="String" MaxLength="200" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="odpowiedz3" Type="String" MaxLength="200" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="odpowiedz4" Type="String" MaxLength="200" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="indeks_poprawnej" Type="SByte" Nullable="false" />
+          <NavigationProperty Name="kategorie" Relationship="Self.id_kategorii" FromRole="pytania" ToRole="kategorie" />
+          <NavigationProperty Name="quiz_pytania" Relationship="Self.id_pytania" FromRole="pytania" ToRole="quiz_pytania" />
+          <NavigationProperty Name="uzytkownicy_login" Relationship="Self.id_uzytkownika_pyt" FromRole="pytania" ToRole="uzytkownicy_login" />
+          <NavigationProperty Name="statystyki_szczegolowe" Relationship="Self.statystyki_szczegolowe_ibfk_2" FromRole="pytania" ToRole="statystyki_szczegolowe" />
+        </EntityType>
+        <EntityType Name="quiz">
+          <Key>
+            <PropertyRef Name="id_quizu" />
+          </Key>
+          <Property Name="id_quizu" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="id_kategorii" Type="Int32" Nullable="false" />
+          <Property Name="id_grupy" Type="Int32" Nullable="false" />
+          <Property Name="id_uzytkownika" Type="Int32" Nullable="false" />
+          <Property Name="ilosc_pytan" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="grupy" Relationship="Self.quiz_ibfk_2" FromRole="quiz" ToRole="grupy" />
+          <NavigationProperty Name="kategorie" Relationship="Self.quiz_ibfk_1" FromRole="quiz" ToRole="kategorie" />
+          <NavigationProperty Name="quiz_pytania" Relationship="Self.id_quizu" FromRole="quiz" ToRole="quiz_pytania" />
+          <NavigationProperty Name="uzytkownicy_login" Relationship="Self.quiz_ibfk_3" FromRole="quiz" ToRole="uzytkownicy_login" />
+          <NavigationProperty Name="statystyki_glowne" Relationship="Self.statystyki_glowne_ibfk_1" FromRole="quiz" ToRole="statystyki_glowne" />
+          <NavigationProperty Name="statystyki_szczegolowe" Relationship="Self.statystyki_szczegolowe_ibfk_1" FromRole="quiz" ToRole="statystyki_szczegolowe" />
+        </EntityType>
+        <EntityType Name="quiz_pytania">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="id_quizu" Type="Int32" Nullable="false" />
+          <Property Name="id_pytania" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="pytania" Relationship="Self.id_pytania" FromRole="quiz_pytania" ToRole="pytania" />
+          <NavigationProperty Name="quiz" Relationship="Self.id_quizu" FromRole="quiz_pytania" ToRole="quiz" />
+        </EntityType>
+        <EntityType Name="statystyki_glowne">
+          <Key>
+            <PropertyRef Name="id_statystyki" />
+          </Key>
+          <Property Name="id_statystyki" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="id_quizu" Type="Int32" Nullable="false" />
+          <Property Name="poprawne" Type="Int32" Nullable="false" />
+          <Property Name="niepoprawne" Type="Int32" Nullable="false" />
+          <Property Name="czas_rozpoczecia" Type="DateTime" />
+          <Property Name="czas_zakonczenia" Type="DateTime" />
+          <NavigationProperty Name="quiz" Relationship="Self.statystyki_glowne_ibfk_1" FromRole="statystyki_glowne" ToRole="quiz" />
+        </EntityType>
+        <EntityType Name="statystyki_szczegolowe">
+          <Key>
+            <PropertyRef Name="id_statystyki_szczeg" />
+          </Key>
+          <Property Name="id_statystyki_szczeg" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="id_quizu" Type="Int32" Nullable="false" />
+          <Property Name="id_pytania" Type="Int32" Nullable="false" />
+          <Property Name="odpowiedz" Type="Int32" />
+          <NavigationProperty Name="pytania" Relationship="Self.statystyki_szczegolowe_ibfk_2" FromRole="statystyki_szczegolowe" ToRole="pytania" />
+          <NavigationProperty Name="quiz" Relationship="Self.statystyki_szczegolowe_ibfk_1" FromRole="statystyki_szczegolowe" ToRole="quiz" />
+        </EntityType>
+        <EntityType Name="uzytkownicy_info">
+          <Key>
+            <PropertyRef Name="id_info" />
+          </Key>
+          <Property Name="id_info" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="id_login" Type="Int32" Nullable="false" />
+          <Property Name="imie" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="nazwisko" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="plec" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="adres_email" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="data_urodzenia" Type="DateTime" />
+          <Property Name="data_rejestracji" Type="DateTime" />
+          <NavigationProperty Name="uzytkownicy_login" Relationship="Self.uzytkownicy_info_ibfk_1" FromRole="uzytkownicy_info" ToRole="uzytkownicy_login" />
+        </EntityType>
+        <EntityType Name="uzytkownicy_login">
+          <Key>
+            <PropertyRef Name="id_login" />
+          </Key>
+          <Property Name="id_login" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="login" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="haslo" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="czlonkowies" Relationship="Self.id_uzytkownika" FromRole="uzytkownicy_login" ToRole="czlonkowie" />
+          <NavigationProperty Name="grupies" Relationship="Self.id_administratora" FromRole="uzytkownicy_login" ToRole="grupy" />
+          <NavigationProperty Name="pytanias" Relationship="Self.id_uzytkownika_pyt" FromRole="uzytkownicy_login" ToRole="pytania" />
+          <NavigationProperty Name="quizs" Relationship="Self.quiz_ibfk_3" FromRole="uzytkownicy_login" ToRole="quiz" />
+          <NavigationProperty Name="uzytkownicy_info" Relationship="Self.uzytkownicy_info_ibfk_1" FromRole="uzytkownicy_login" ToRole="uzytkownicy_info" />
+        </EntityType>
+        <Association Name="id_grupy">
+          <End Role="grupy" Type="Self.grupy" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="czlonkowie" Type="Self.czlonkowie" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="grupy">
+              <PropertyRef Name="id_grupy" />
+            </Principal>
+            <Dependent Role="czlonkowie">
+              <PropertyRef Name="id_grupy" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="id_uzytkownika">
+          <End Role="uzytkownicy_login" Type="Self.uzytkownicy_login" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="czlonkowie" Type="Self.czlonkowie" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="uzytkownicy_login">
+              <PropertyRef Name="id_login" />
+            </Principal>
+            <Dependent Role="czlonkowie">
+              <PropertyRef Name="id_uzytkownika" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="id_administratora">
+          <End Role="uzytkownicy_login" Type="Self.uzytkownicy_login" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="grupy" Type="Self.grupy" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="uzytkownicy_login">
+              <PropertyRef Name="id_login" />
+            </Principal>
+            <Dependent Role="grupy">
+              <PropertyRef Name="id_administratora" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="kategorie_ibfk_1">
+          <End Role="grupy" Type="Self.grupy" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="kategorie" Type="Self.kategorie" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="grupy">
+              <PropertyRef Name="id_grupy" />
+            </Principal>
+            <Dependent Role="kategorie">
+              <PropertyRef Name="id_grupy" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="quiz_ibfk_2">
+          <End Role="grupy" Type="Self.grupy" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="quiz" Type="Self.quiz" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="grupy">
+              <PropertyRef Name="id_grupy" />
+            </Principal>
+            <Dependent Role="quiz">
+              <PropertyRef Name="id_grupy" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="id_kategorii">
+          <End Role="kategorie" Type="Self.kategorie" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="pytania" Type="Self.pytania" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="kategorie">
+              <PropertyRef Name="id_kategorii" />
+            </Principal>
+            <Dependent Role="pytania">
+              <PropertyRef Name="id_kategorii" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="quiz_ibfk_1">
+          <End Role="kategorie" Type="Self.kategorie" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="quiz" Type="Self.quiz" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="kategorie">
+              <PropertyRef Name="id_kategorii" />
+            </Principal>
+            <Dependent Role="quiz">
+              <PropertyRef Name="id_kategorii" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="id_pytania">
+          <End Role="pytania" Type="Self.pytania" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="quiz_pytania" Type="Self.quiz_pytania" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="pytania">
+              <PropertyRef Name="id_pytania" />
+            </Principal>
+            <Dependent Role="quiz_pytania">
+              <PropertyRef Name="id_pytania" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="id_uzytkownika_pyt">
+          <End Role="uzytkownicy_login" Type="Self.uzytkownicy_login" Multiplicity="1" />
+          <End Role="pytania" Type="Self.pytania" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="uzytkownicy_login">
+              <PropertyRef Name="id_login" />
+            </Principal>
+            <Dependent Role="pytania">
+              <PropertyRef Name="id_uzytkownika" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="statystyki_szczegolowe_ibfk_2">
+          <End Role="pytania" Type="Self.pytania" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="statystyki_szczegolowe" Type="Self.statystyki_szczegolowe" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="pytania">
+              <PropertyRef Name="id_pytania" />
+            </Principal>
+            <Dependent Role="statystyki_szczegolowe">
+              <PropertyRef Name="id_pytania" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="id_quizu">
+          <End Role="quiz" Type="Self.quiz" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="quiz_pytania" Type="Self.quiz_pytania" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="quiz">
+              <PropertyRef Name="id_quizu" />
+            </Principal>
+            <Dependent Role="quiz_pytania">
+              <PropertyRef Name="id_quizu" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="quiz_ibfk_3">
+          <End Role="uzytkownicy_login" Type="Self.uzytkownicy_login" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="quiz" Type="Self.quiz" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="uzytkownicy_login">
+              <PropertyRef Name="id_login" />
+            </Principal>
+            <Dependent Role="quiz">
+              <PropertyRef Name="id_uzytkownika" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="statystyki_glowne_ibfk_1">
+          <End Role="quiz" Type="Self.quiz" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="statystyki_glowne" Type="Self.statystyki_glowne" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="quiz">
+              <PropertyRef Name="id_quizu" />
+            </Principal>
+            <Dependent Role="statystyki_glowne">
+              <PropertyRef Name="id_quizu" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="statystyki_szczegolowe_ibfk_1">
+          <End Role="quiz" Type="Self.quiz" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="statystyki_szczegolowe" Type="Self.statystyki_szczegolowe" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="quiz">
+              <PropertyRef Name="id_quizu" />
+            </Principal>
+            <Dependent Role="statystyki_szczegolowe">
+              <PropertyRef Name="id_quizu" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="uzytkownicy_info_ibfk_1">
+          <End Role="uzytkownicy_login" Type="Self.uzytkownicy_login" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="uzytkownicy_info" Type="Self.uzytkownicy_info" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="uzytkownicy_login">
+              <PropertyRef Name="id_login" />
+            </Principal>
+            <Dependent Role="uzytkownicy_info">
+              <PropertyRef Name="id_login" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="straklearndbEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="czlonkowies" EntityType="Self.czlonkowie" />
+          <EntitySet Name="grupies" EntityType="Self.grupy" />
+          <EntitySet Name="kategories" EntityType="Self.kategorie" />
+          <EntitySet Name="pytanias" EntityType="Self.pytania" />
+          <EntitySet Name="quizs" EntityType="Self.quiz" />
+          <EntitySet Name="quiz_pytania" EntityType="Self.quiz_pytania" />
+          <EntitySet Name="statystyki_glowne" EntityType="Self.statystyki_glowne" />
+          <EntitySet Name="statystyki_szczegolowe" EntityType="Self.statystyki_szczegolowe" />
+          <EntitySet Name="uzytkownicy_info" EntityType="Self.uzytkownicy_info" />
+          <EntitySet Name="uzytkownicy_login" EntityType="Self.uzytkownicy_login" />
+          <AssociationSet Name="id_grupy" Association="Self.id_grupy">
+            <End Role="grupy" EntitySet="grupies" />
+            <End Role="czlonkowie" EntitySet="czlonkowies" />
+          </AssociationSet>
+          <AssociationSet Name="id_uzytkownika" Association="Self.id_uzytkownika">
+            <End Role="uzytkownicy_login" EntitySet="uzytkownicy_login" />
+            <End Role="czlonkowie" EntitySet="czlonkowies" />
+          </AssociationSet>
+          <AssociationSet Name="id_administratora" Association="Self.id_administratora">
+            <End Role="uzytkownicy_login" EntitySet="uzytkownicy_login" />
+            <End Role="grupy" EntitySet="grupies" />
+          </AssociationSet>
+          <AssociationSet Name="kategorie_ibfk_1" Association="Self.kategorie_ibfk_1">
+            <End Role="grupy" EntitySet="grupies" />
+            <End Role="kategorie" EntitySet="kategories" />
+          </AssociationSet>
+          <AssociationSet Name="quiz_ibfk_2" Association="Self.quiz_ibfk_2">
+            <End Role="grupy" EntitySet="grupies" />
+            <End Role="quiz" EntitySet="quizs" />
+          </AssociationSet>
+          <AssociationSet Name="id_kategorii" Association="Self.id_kategorii">
+            <End Role="kategorie" EntitySet="kategories" />
+            <End Role="pytania" EntitySet="pytanias" />
+          </AssociationSet>
+          <AssociationSet Name="quiz_ibfk_1" Association="Self.quiz_ibfk_1">
+            <End Role="kategorie" EntitySet="kategories" />
+            <End Role="quiz" EntitySet="quizs" />
+          </AssociationSet>
+          <AssociationSet Name="id_pytania" Association="Self.id_pytania">
+            <End Role="pytania" EntitySet="pytanias" />
+            <End Role="quiz_pytania" EntitySet="quiz_pytania" />
+          </AssociationSet>
+          <AssociationSet Name="id_uzytkownika_pyt" Association="Self.id_uzytkownika_pyt">
+            <End Role="uzytkownicy_login" EntitySet="uzytkownicy_login" />
+            <End Role="pytania" EntitySet="pytanias" />
+          </AssociationSet>
+          <AssociationSet Name="statystyki_szczegolowe_ibfk_2" Association="Self.statystyki_szczegolowe_ibfk_2">
+            <End Role="pytania" EntitySet="pytanias" />
+            <End Role="statystyki_szczegolowe" EntitySet="statystyki_szczegolowe" />
+          </AssociationSet>
+          <AssociationSet Name="id_quizu" Association="Self.id_quizu">
+            <End Role="quiz" EntitySet="quizs" />
+            <End Role="quiz_pytania" EntitySet="quiz_pytania" />
+          </AssociationSet>
+          <AssociationSet Name="quiz_ibfk_3" Association="Self.quiz_ibfk_3">
+            <End Role="uzytkownicy_login" EntitySet="uzytkownicy_login" />
+            <End Role="quiz" EntitySet="quizs" />
+          </AssociationSet>
+          <AssociationSet Name="statystyki_glowne_ibfk_1" Association="Self.statystyki_glowne_ibfk_1">
+            <End Role="quiz" EntitySet="quizs" />
+            <End Role="statystyki_glowne" EntitySet="statystyki_glowne" />
+          </AssociationSet>
+          <AssociationSet Name="statystyki_szczegolowe_ibfk_1" Association="Self.statystyki_szczegolowe_ibfk_1">
+            <End Role="quiz" EntitySet="quizs" />
+            <End Role="statystyki_szczegolowe" EntitySet="statystyki_szczegolowe" />
+          </AssociationSet>
+          <AssociationSet Name="uzytkownicy_info_ibfk_1" Association="Self.uzytkownicy_info_ibfk_1">
+            <End Role="uzytkownicy_login" EntitySet="uzytkownicy_login" />
+            <End Role="uzytkownicy_info" EntitySet="uzytkownicy_info" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="straklearndbModelStoreContainer" CdmEntityContainer="straklearndbEntities">
+          <EntitySetMapping Name="czlonkowies">
+            <EntityTypeMapping TypeName="straklearndbModel.czlonkowie">
+              <MappingFragment StoreEntitySet="czlonkowie">
+                <ScalarProperty Name="id_czlonkostwa" ColumnName="id_czlonkostwa" />
+                <ScalarProperty Name="id_grupy" ColumnName="id_grupy" />
+                <ScalarProperty Name="id_uzytkownika" ColumnName="id_uzytkownika" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="grupies">
+            <EntityTypeMapping TypeName="straklearndbModel.grupy">
+              <MappingFragment StoreEntitySet="grupy">
+                <ScalarProperty Name="id_grupy" ColumnName="id_grupy" />
+                <ScalarProperty Name="id_administratora" ColumnName="id_administratora" />
+                <ScalarProperty Name="nazwa" ColumnName="nazwa" />
+                <ScalarProperty Name="prywatnosc" ColumnName="prywatnosc" />
+                <ScalarProperty Name="data_zalozenia" ColumnName="data_zalozenia" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="kategories">
+            <EntityTypeMapping TypeName="straklearndbModel.kategorie">
+              <MappingFragment StoreEntitySet="kategorie">
+                <ScalarProperty Name="id_kategorii" ColumnName="id_kategorii" />
+                <ScalarProperty Name="id_grupy" ColumnName="id_grupy" />
+                <ScalarProperty Name="nazwa" ColumnName="nazwa" />
+                <ScalarProperty Name="opis" ColumnName="opis" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="pytanias">
+            <EntityTypeMapping TypeName="straklearndbModel.pytania">
+              <MappingFragment StoreEntitySet="pytania">
+                <ScalarProperty Name="id_pytania" ColumnName="id_pytania" />
+                <ScalarProperty Name="id_kategorii" ColumnName="id_kategorii" />
+                <ScalarProperty Name="id_uzytkownika" ColumnName="id_uzytkownika" />
+                <ScalarProperty Name="tresc" ColumnName="tresc" />
+                <ScalarProperty Name="odpowiedz1" ColumnName="odpowiedz1" />
+                <ScalarProperty Name="odpowiedz2" ColumnName="odpowiedz2" />
+                <ScalarProperty Name="odpowiedz3" ColumnName="odpowiedz3" />
+                <ScalarProperty Name="odpowiedz4" ColumnName="odpowiedz4" />
+                <ScalarProperty Name="indeks_poprawnej" ColumnName="indeks_poprawnej" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="quizs">
+            <EntityTypeMapping TypeName="straklearndbModel.quiz">
+              <MappingFragment StoreEntitySet="quiz">
+                <ScalarProperty Name="id_quizu" ColumnName="id_quizu" />
+                <ScalarProperty Name="id_kategorii" ColumnName="id_kategorii" />
+                <ScalarProperty Name="id_grupy" ColumnName="id_grupy" />
+                <ScalarProperty Name="id_uzytkownika" ColumnName="id_uzytkownika" />
+                <ScalarProperty Name="ilosc_pytan" ColumnName="ilosc_pytan" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="quiz_pytania">
+            <EntityTypeMapping TypeName="straklearndbModel.quiz_pytania">
+              <MappingFragment StoreEntitySet="quiz_pytania">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="id_quizu" ColumnName="id_quizu" />
+                <ScalarProperty Name="id_pytania" ColumnName="id_pytania" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="statystyki_glowne">
+            <EntityTypeMapping TypeName="straklearndbModel.statystyki_glowne">
+              <MappingFragment StoreEntitySet="statystyki_glowne">
+                <ScalarProperty Name="id_statystyki" ColumnName="id_statystyki" />
+                <ScalarProperty Name="id_quizu" ColumnName="id_quizu" />
+                <ScalarProperty Name="poprawne" ColumnName="poprawne" />
+                <ScalarProperty Name="niepoprawne" ColumnName="niepoprawne" />
+                <ScalarProperty Name="czas_rozpoczecia" ColumnName="czas_rozpoczecia" />
+                <ScalarProperty Name="czas_zakonczenia" ColumnName="czas_zakonczenia" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="statystyki_szczegolowe">
+            <EntityTypeMapping TypeName="straklearndbModel.statystyki_szczegolowe">
+              <MappingFragment StoreEntitySet="statystyki_szczegolowe">
+                <ScalarProperty Name="id_statystyki_szczeg" ColumnName="id_statystyki_szczeg" />
+                <ScalarProperty Name="id_quizu" ColumnName="id_quizu" />
+                <ScalarProperty Name="id_pytania" ColumnName="id_pytania" />
+                <ScalarProperty Name="odpowiedz" ColumnName="odpowiedz" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="uzytkownicy_info">
+            <EntityTypeMapping TypeName="straklearndbModel.uzytkownicy_info">
+              <MappingFragment StoreEntitySet="uzytkownicy_info">
+                <ScalarProperty Name="id_info" ColumnName="id_info" />
+                <ScalarProperty Name="id_login" ColumnName="id_login" />
+                <ScalarProperty Name="imie" ColumnName="imie" />
+                <ScalarProperty Name="nazwisko" ColumnName="nazwisko" />
+                <ScalarProperty Name="plec" ColumnName="plec" />
+                <ScalarProperty Name="adres_email" ColumnName="adres_email" />
+                <ScalarProperty Name="data_urodzenia" ColumnName="data_urodzenia" />
+                <ScalarProperty Name="data_rejestracji" ColumnName="data_rejestracji" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="uzytkownicy_login">
+            <EntityTypeMapping TypeName="straklearndbModel.uzytkownicy_login">
+              <MappingFragment StoreEntitySet="uzytkownicy_login">
+                <ScalarProperty Name="id_login" ColumnName="id_login" />
+                <ScalarProperty Name="login" ColumnName="login" />
+                <ScalarProperty Name="haslo" ColumnName="haslo" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="true" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
